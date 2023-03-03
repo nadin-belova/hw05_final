@@ -59,6 +59,7 @@ class PostURLTests(TestCase):
             "/posts/1/": [hst.OK, hst.OK, hst.OK],
             "/posts/1/edit/": [hst.FOUND, hst.FOUND, hst.OK],
             "/create/": [hst.FOUND, hst.OK, hst.OK],
+            "/posts/1/comment/": [hst.FOUND, hst.FOUND, hst.FOUND],
         }
 
         for address, statuses in data.items():
@@ -84,6 +85,7 @@ class PostURLTests(TestCase):
                 ""
             ],
             "/create/": ["/auth/login/?next=/create/", "", ""],
+            "/posts/1/comment/": ["/auth/login/?next=/posts/1/comment/", "", ""],
         }
 
         for address, redirect_addresses in data.items():
