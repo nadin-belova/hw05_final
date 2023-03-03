@@ -86,36 +86,3 @@ class PostCreateFormTests(TestCase):
                 text=self.post.text * 3,
             ).exists()
         )
-
-    # def test_comment_post_can_only_authenticated_user(self):
-    #     """Комментировать посты может только авторизованный пользователь."""
-    #     self.client = Client()
-    #     response = self.client.post(
-    #         reverse('posts:add_comment', kwargs={'post_id': self.post.id})
-    #     )
-    #     self.assertContains(
-    #         response, 'Вы должны быть зарегистрированы', status_code=401)
-
-        # self.client.login(username='testuser', password='testpass')
-        # response = self.client.post(
-        #     reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
-        #     data={'text': 'текст комментария'}
-        # )
-        # self.assertEqual(response.status_code, 302)
-        # self.assertEqual(Comment.objects.count(), 1)
-
-    # def test_comment_appears_on_post_page(self):
-    #     """Комментирование поста авторизованным пользователем"""
-    #     self.client.login(
-    #         username='testuser',
-    #         password='testpass'
-    #     )
-    #     response = self.client.post(
-    #         reverse('posts:add_comment', kwargs={'post_id': self.post.id}),
-    #         data={'text': 'текст комментария'}
-    #     )
-
-    #     # Проверка, что комментарий отображается на странице поста
-    #     response = self.client.get(reverse
-    #     ('posts:post_detail', kwargs={'post_id': self.post.id}))
-    #     self.assertContains(response, 'текст комментария')
