@@ -1,0 +1,28 @@
+<!-- templates/posts/index.html -->
+{% extends 'base.html' %} 
+
+{% block title %}
+    <title>Последние обновления на сайте</title>
+{% endblock %} 
+
+{% block content %}
+<!-- класс py-5 создает отступы сверху и снизу блока -->
+<div class="container py-5">
+    {% for post in page_obj %} 
+        {% include 'includes/post_card.html' %} 
+        <a href=" {% url 'posts:post_detail' post.id %} ">подробная информация </a>
+        <br />
+        
+        {% if post.group %}
+            <a href="{% url 'posts:group_list' post.group.slug %}"> все записи группы "{{ post.group.title }}"</a>
+        {% endif %} 
+    
+        {% if not forloop.last %}
+            <hr />
+        {% endif %} 
+    {% endfor %}
+    <!-- под последним постом нет линии -->
+</div>
+
+{% endblock %}
+
