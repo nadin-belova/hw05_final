@@ -5,7 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from ..forms import PostForm
 
-from ..models import Group, Post
+from ..models import Comment, Group, Post
 
 User = get_user_model()
 
@@ -24,6 +24,12 @@ class PostPageTests(TestCase):
             text="пост",
             group=self.group,
         )
+
+        self.comment = Comment.objects.create(
+            post=self.post,
+            author=self.user,
+        )
+        self.comment.post = self.post
 
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
@@ -206,6 +212,18 @@ class PostPageTests(TestCase):
 
         form = response.context["form"]
         self.assertIsInstance(form, PostForm)
+
+    def test_add_comment_post_detail_contains_one_comment(self):
+        """
+        Context страницы /post_detail содержит один коментарий
+        """
+
+        response = self.authorized_client.get(
+            reverse("posts:post_detail", kwargs={"post_id": self.post.id})
+        )
+
+        first_comment = response.context["comments"][0]
+        self.assertEqual(first_comment, self.comment)
 
 
 class PaginatorViewsTest(TestCase):
