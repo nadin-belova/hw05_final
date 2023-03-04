@@ -7,6 +7,9 @@ from ..forms import PostForm
 
 from ..models import Comment, Group, Post
 
+from django.core.cache import cache
+
+
 User = get_user_model()
 
 
@@ -351,3 +354,40 @@ class ImagePostPageTests(TestCase):
         post = response.context["post"]
 
         self.assertEqual(post.image, self.post.image)
+
+
+class CacheTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        cls.author = User.objects.create_user(username='author')
+
+        cls.author_client = Client()
+        cls.author_client.force_login(cls.author)
+
+        cls.post = Post.objects.create(
+            author=cls.author,
+        )
+
+    def setUp(self):
+        cache.clear()
+
+    def test_index_page_cache(self):
+        """
+        Проверяем, что на главной странице используется кеш.
+        """
+        post = Post.objects.create(
+            author=self.author,
+        )
+
+        response_predelete = self.client.get(reverse('posts:index'))
+        post.delete()
+        response_afterdelete = self.client.get(reverse('posts:index'))
+        self.assertEqual(response_predelete.content,
+                         response_afterdelete.content)
+
+        cache.clear()
+        response_after_clear_cash = self.client.get(reverse('posts:index'))
+        self.assertNotEqual(response_afterdelete.content,
+                            response_after_clear_cash.content)
