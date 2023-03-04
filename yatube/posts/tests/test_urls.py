@@ -39,6 +39,7 @@ class PostURLTests(TestCase):
             "/posts/1/": "posts/post_detail.html",
             "/posts/1/edit/": "posts/create_post.html",
             "/create/": "posts/create_post.html",
+            "/unexisting_page/": "core/404.html"
         }
 
         for address, template in data.items():
