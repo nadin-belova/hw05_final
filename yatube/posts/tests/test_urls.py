@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 
 from ..models import Group, Post
+from django.core.cache import cache
 
 from http import HTTPStatus as hst
 
@@ -28,6 +29,8 @@ class PostURLTests(TestCase):
             self.authorized_client,
             self.author_client
         ]
+
+        cache.clear()
 
     def test_urls_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""

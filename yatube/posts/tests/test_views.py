@@ -37,6 +37,8 @@ class PostPageTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
+        cache.clear()
+
     def test_pages_use_template_by_url_name(self):
         """Корректен ли адрес 'name' функции path() и формируемой по
         этому адресу странице html"""
@@ -261,6 +263,8 @@ class PaginatorViewsTest(TestCase):
         # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
 
+        cache.clear()
+
     def __test_paginator(self, reverse_name: str, kwargs=None):
         response = self.client.get(
             reverse(reverse_name, kwargs=kwargs) + f"?page={self.PAGE_ID}"
@@ -306,6 +310,8 @@ class ImagePostPageTests(TestCase):
 
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+
+        cache.clear()
 
     def test_index_page_contains_single_post_with_image(self):
         """
