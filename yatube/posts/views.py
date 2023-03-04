@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from django.views.decorators.cache import cache_page
 
+from django.core.cache import cache
 
 def paginator(request, posts):
     SELECT_LIMIT = 10
@@ -16,7 +17,7 @@ def paginator(request, posts):
     return page_obj
 
 
-# @cache_page(60 * 15)
+@cache_page(20)
 def index(request):
     post_list = Post.objects.all().order_by("-pub_date")
     page_obj = paginator(request, post_list)
@@ -24,6 +25,7 @@ def index(request):
         "page_obj": page_obj,
     }
     return render(request, "posts/index.html", context)
+
 
 
 def group_posts(request, slug):
