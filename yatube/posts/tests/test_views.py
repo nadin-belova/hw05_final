@@ -408,13 +408,22 @@ class FolowingTests(TestCase):
         self.other_user = User.objects.create_user(username='other_user')
 
         # Другой пользователь пишет пост
-        self.post = Post.objects.create(
+        self.other_user_post = Post.objects.create(
             author=self.other_user
+        )
+
+        # Ещё один пользователь, который не любит подписываться
+        self.emptyfollow_user = User.objects.create_user(
+            username='emptyfollow_user'
         )
         
         # Текущий пользователь логинится
-        self.authorized_client = Client()
-        self.authorized_client.force_login(self.user)
+        self.user_client = Client()
+        self.user_client.force_login(self.user)
+
+        # Пользователь, который не любит подписываться логинится
+        self.emptyfollow_user_client = Client()
+        self.emptyfollow_user_client.force_login(self.emptyfollow_user)
 
         # Очищаем кэш
         cache.clear()
@@ -426,7 +435,7 @@ class FolowingTests(TestCase):
         """
 
         # Подписываемся на другого пользователя
-        self.authorized_client.get(
+        self.user_client.get(
             reverse(
                 'posts:profile_follow', 
                 kwargs={'username': self.other_user}
@@ -434,21 +443,21 @@ class FolowingTests(TestCase):
         )
         
         # Открываем страничку своих подписок /follow/
-        response = self.authorized_client.get(reverse('posts:follow_index'))
+        response = self.user_client.get(reverse('posts:follow_index'))
 
         # Смотрим есть ли на странице подписок пост другого пользователя
         self.assertEqual(response.context.get('page_obj')[0].author,
                          self.other_user)
 
 
-    def test_authorized_can_unfollow(self):
+    def test_authorized_user_can_unfollow(self):
         """
         Авторизованный пользователь может удалять из подписок других 
         пользователей.
         """
 
         # Отписываемся от другого пользователя
-        self.authorized_client.get(
+        self.user_client.get(
             reverse(
                 'posts:profile_unfollow',
                 kwargs={'username': self.other_user}
@@ -456,7 +465,23 @@ class FolowingTests(TestCase):
         )
 
         # Открываем страничку своих подписок /follow/
-        response = self.authorized_client.get(reverse('posts:follow_index'))
+        response = self.user_client.get(reverse('posts:follow_index'))
 
         # Смотрим что страница подписок пустая
         self.assertTrue(not [*response.context.get('page_obj')])
+
+    def test_new_post_views_only_followers(self):
+        """
+        Новая запись пользователя появляется только в ленте тех, кто на него 
+        подписан. 
+        """
+
+        # Подписываемся на другого и ищем пост на своей ленте
+        self.test_authorized_user_can_follow()
+        
+        # Пост не должен попасть пользователю, который не любит подписываться
+        response = self.emptyfollow_user_client.get(
+            reverse('posts:follow_index')
+        )
+        self.assertTrue(not [*response.context.get('page_obj')])
+    
