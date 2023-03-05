@@ -27,6 +27,7 @@ urlpatterns = [
     # path('__debug__/', include('debug_toolbar.urls')),  # delete this.RGenius
 ]
 handler404 = 'core.views.page_not_found'
+handler403 = 'core.views.csrf_failure'
 
 
 if settings.DEBUG:
