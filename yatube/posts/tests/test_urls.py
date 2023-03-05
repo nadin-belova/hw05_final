@@ -59,7 +59,7 @@ class PostURLTests(TestCase):
         data = {
             "/": [hst.OK, hst.OK, hst.OK],
             "/group/slug/": [hst.OK, hst.OK, hst.OK],
-            "/profile/auth/": [hst.OK, hst.OK, hst.OK],
+            "/profile/auth/": [hst.FOUND, hst.OK, hst.OK],
             "/posts/1/": [hst.OK, hst.OK, hst.OK],
             "/posts/1/edit/": [hst.FOUND, hst.FOUND, hst.OK],
             "/create/": [hst.FOUND, hst.OK, hst.OK],
@@ -81,7 +81,7 @@ class PostURLTests(TestCase):
         data = {
             "/": ["", "", ""],
             "/group/slug/": ["", "", ""],
-            "/profile/auth/": ["", "", ""],
+            "/profile/auth/": ["/auth/login/?next=/profile/auth/", "", ""],
             "/posts/1/": ["", "", ""],
             "/posts/1/edit/": [
                 "/auth/login/?next=/posts/1/edit/",

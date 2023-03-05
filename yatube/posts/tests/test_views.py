@@ -266,14 +266,14 @@ class PaginatorViewsTest(TestCase):
         cache.clear()
 
     def __test_paginator(self, reverse_name: str, kwargs=None):
-        response = self.client.get(
+        response = self.authorized_client.get(
             reverse(reverse_name, kwargs=kwargs) + f"?page={self.PAGE_ID}"
         )
         self.assertEqual(
             len(response.context["page_obj"]), self.SECOND_PAGE_POSTS_COUNT
         )
 
-        response = self.client.get(reverse(reverse_name, kwargs=kwargs))
+        response = self.authorized_client.get(reverse(reverse_name, kwargs=kwargs))
         self.assertEqual(
             len(response.context["page_obj"]),
             self.FIRST_PAGE_POSTS_COUNT
