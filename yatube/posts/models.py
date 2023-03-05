@@ -53,7 +53,10 @@ class Comment(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='comments')
     text = models.TextField()
-    created = models.DateTimeField(default=timezone.now)
+    created = models.DateTimeField(
+        auto_now_add=True,
+        # default=timezone.now
+    )
 
     def __str__(self):
         return self.text
