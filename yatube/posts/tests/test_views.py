@@ -433,7 +433,7 @@ class FolowingTests(TestCase):
             )
         )
         
-        # Открываем страничку /follow/
+        # Открываем страничку своих подписок /follow/
         response = self.authorized_client.get(reverse('posts:follow_index'))
 
         # Смотрим есть ли на странице подписок пост другого пользователя
@@ -441,5 +441,22 @@ class FolowingTests(TestCase):
                          self.other_user)
 
 
-    # def test_authorized_can_unfollow(self):
-    #     """Авторизованный пользователь может удалять из подписок других пользователей."""
+    def test_authorized_can_unfollow(self):
+        """
+        Авторизованный пользователь может удалять из подписок других 
+        пользователей.
+        """
+
+        # Отписываемся от другого пользователя
+        self.authorized_client.get(
+            reverse(
+                'posts:profile_unfollow',
+                kwargs={'username': self.other_user}
+            )
+        )
+
+        # Открываем страничку своих подписок /follow/
+        response = self.authorized_client.get(reverse('posts:follow_index'))
+
+        # Смотрим что страница подписок пустая
+        self.assertTrue(not [*response.context.get('page_obj')])
