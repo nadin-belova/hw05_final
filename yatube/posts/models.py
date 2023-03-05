@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.utils import timezone
 from django.contrib.auth.models import User
 
 
@@ -55,7 +54,6 @@ class Comment(models.Model):
     text = models.TextField()
     created = models.DateTimeField(
         auto_now_add=True,
-        # default=timezone.now
     )
 
     def __str__(self):
