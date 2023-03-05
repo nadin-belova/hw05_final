@@ -397,3 +397,15 @@ class CacheTests(TestCase):
         response_after_clear_cash = self.client.get(reverse('posts:index'))
         self.assertNotEqual(response_afterdelete.content,
                             response_after_clear_cash.content)
+
+
+class FolowingTests(TestCase):
+    def setUp(self):
+        # Создаем авторизованный клиент
+        self.authorized_client = Client()
+        # Авторизуем пользователя
+        self.authorized_client.force_login(self.user)
+
+        cache.clear()
+
+    
