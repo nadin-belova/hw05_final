@@ -37,7 +37,7 @@ def group_posts(request, slug):
     return render(request, "posts/group_list.html", context)
 
 
-@login_required
+# @login_required
 def profile(request, username):
     author = User.objects.get(username__exact=username)
     post_list = author.posts.order_by("-pub_date")
