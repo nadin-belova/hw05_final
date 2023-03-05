@@ -273,7 +273,8 @@ class PaginatorViewsTest(TestCase):
             len(response.context["page_obj"]), self.SECOND_PAGE_POSTS_COUNT
         )
 
-        response = self.authorized_client.get(reverse(reverse_name, kwargs=kwargs))
+        response = self.authorized_client.get(
+            reverse(reverse_name, kwargs=kwargs))
         self.assertEqual(
             len(response.context["page_obj"]),
             self.FIRST_PAGE_POSTS_COUNT
@@ -403,24 +404,19 @@ class FolowingTests(TestCase):
     def setUp(self):
         # Текущий пользователь
         self.user = User.objects.create_user(username='user')
-        
         # Другой пользователь, на которого будем подписываться
         self.other_user = User.objects.create_user(username='other_user')
-
         # Другой пользователь пишет пост
         self.other_user_post = Post.objects.create(
             author=self.other_user
         )
-
         # Ещё один пользователь, который не любит подписываться
         self.emptyfollow_user = User.objects.create_user(
             username='emptyfollow_user'
         )
-        
         # Текущий пользователь логинится
         self.user_client = Client()
         self.user_client.force_login(self.user)
-
         # Пользователь, который не любит подписываться логинится
         self.emptyfollow_user_client = Client()
         self.emptyfollow_user_client.force_login(self.emptyfollow_user)
@@ -430,18 +426,17 @@ class FolowingTests(TestCase):
 
     def test_authorized_user_can_follow(self):
         """
-        Авторизованный пользователь может подписываться на других 
+        Авторизованный пользователь может подписываться на других
         пользователей.
         """
 
         # Подписываемся на другого пользователя
         self.user_client.get(
             reverse(
-                'posts:profile_follow', 
+                'posts:profile_follow',
                 kwargs={'username': self.other_user}
             )
         )
-        
         # Открываем страничку своих подписок /follow/
         response = self.user_client.get(reverse('posts:follow_index'))
 
@@ -449,10 +444,9 @@ class FolowingTests(TestCase):
         self.assertEqual(response.context.get('page_obj')[0].author,
                          self.other_user)
 
-
     def test_authorized_user_can_unfollow(self):
         """
-        Авторизованный пользователь может удалять из подписок других 
+        Авторизованный пользователь может удалять из подписок других
         пользователей.
         """
 
@@ -472,16 +466,13 @@ class FolowingTests(TestCase):
 
     def test_new_post_views_only_followers(self):
         """
-        Новая запись пользователя появляется только в ленте тех, кто на него 
-        подписан. 
+        Новая запись пользователя появляется только в ленте тех, кто на него
+        подписан.
         """
-
         # Подписываемся на другого и ищем пост на своей ленте
         self.test_authorized_user_can_follow()
-        
         # Пост не должен попасть пользователю, который не любит подписываться
         response = self.emptyfollow_user_client.get(
             reverse('posts:follow_index')
         )
         self.assertTrue(not [*response.context.get('page_obj')])
-    

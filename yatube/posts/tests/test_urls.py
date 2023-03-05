@@ -89,7 +89,8 @@ class PostURLTests(TestCase):
                 ""
             ],
             "/create/": ["/auth/login/?next=/create/", "", ""],
-            "/posts/1/comment/": ["/auth/login/?next=/posts/1/comment/", "", ""],
+            "/posts/1/comment/": [
+                "/auth/login/?next=/posts/1/comment/", "", ""],
         }
 
         for address, redirect_addresses in data.items():

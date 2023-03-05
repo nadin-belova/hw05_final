@@ -5,9 +5,6 @@ from django.core.paginator import Paginator
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
-from django.views.decorators.cache import cache_page
-
-from django.core.cache import cache
 from .models import Follow
 
 
@@ -152,6 +149,7 @@ def follow_index(request):
     }
     return render(request, 'posts/follow.html', context)
 
+
 @login_required
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
@@ -163,6 +161,7 @@ def profile_follow(request, username):
             author=follow_author
         )
     return redirect('posts:profile', username)
+
 
 @login_required
 def profile_unfollow(request, username):

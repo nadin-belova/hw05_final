@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
 from django.utils import timezone
 from django.contrib.auth.models import User
 
@@ -46,14 +45,6 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.text[:15]}..."
-
-    # class Meta:
-    #     ordering = ('-pub_date',)
-    #     verbose_name = 'Пост's
-    #     verbose_name_plural = 'Посты'
-
-    # def __str__(self):
-    #     return self.text[:15]
 
 
 class Comment(models.Model):
