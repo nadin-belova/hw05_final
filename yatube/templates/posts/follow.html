@@ -1,8 +1,7 @@
-<!-- templates/posts/index.html -->
 {% extends 'base.html' %} 
 
 {% block title %}
-    <title>Последние обновления на сайте</title>
+    <title>посты авторов, на которых подписан текущий пользователь</title>
 {% endblock %} 
 
 {% block content %}
@@ -10,9 +9,9 @@
 <!-- класс py-5 создает отступы сверху и снизу блока -->
 <div class="container py-5">
     {% include 'posts/includes/switcher.html' %}
-    {% load cache %}
+    {% comment %} {% load cache %} {% endcomment %}
 
-    {% cache 20 index_page %}
+    {% comment %} {% cache 20 index_page %} {% endcomment %}
         {% for post in page_obj %} 
             {% include 'includes/post_card.html' %} 
             <a href=" {% url 'posts:post_detail' post.id %} ">подробная информация </a>
@@ -26,9 +25,8 @@
                 <hr />
             {% endif %} 
         {% endfor %}
-    {% endcache %}
+    {% comment %} {% endcache %} {% endcomment %}
     <!-- под последним постом нет линии -->
 </div>
 
 {% endblock %}
-
