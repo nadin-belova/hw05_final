@@ -401,11 +401,45 @@ class CacheTests(TestCase):
 
 class FolowingTests(TestCase):
     def setUp(self):
-        # Создаем авторизованный клиент
+        # Текущий пользователь
+        self.user = User.objects.create_user(username='user')
+        
+        # Другой пользователь, на которого будем подписываться
+        self.other_user = User.objects.create_user(username='other_user')
+
+        # Другой пользователь пишет пост
+        self.post = Post.objects.create(
+            author=self.other_user
+        )
+        
+        # Текущий пользователь логинится
         self.authorized_client = Client()
-        # Авторизуем пользователя
         self.authorized_client.force_login(self.user)
 
+        # Очищаем кэш
         cache.clear()
 
-    
+    def test_authorized_user_can_follow(self):
+        """
+        Авторизованный пользователь может подписываться на других 
+        пользователей.
+        """
+
+        # Подписываемся на другого пользователя
+        self.authorized_client.get(
+            reverse(
+                'posts:profile_follow', 
+                kwargs={'username': self.other_user}
+            )
+        )
+        
+        # Открываем страничку /follow/
+        response = self.authorized_client.get(reverse('posts:follow_index'))
+
+        # Смотрим есть ли на странице подписок пост другого пользователя
+        self.assertEqual(response.context.get('page_obj')[0].author,
+                         self.other_user)
+
+
+    # def test_authorized_can_unfollow(self):
+    #     """Авторизованный пользователь может удалять из подписок других пользователей."""
