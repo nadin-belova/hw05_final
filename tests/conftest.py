@@ -1,6 +1,6 @@
 import os
 from django.utils.version import get_version
-from yatube import INSTALLED_APPS
+# from yatube import INSTALLED_APPS
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,7 +30,7 @@ if FILENAME not in project_dir_content:
 
 assert get_version() < '3.0.0', 'Пожалуйста, используйте версию Django < 3.0.0'
 
-# from yatube.settings import INSTALLED_APPS
+from yatube.settings import INSTALLED_APPS
 
 assert any(
     app in INSTALLED_APPS for app in ['posts.apps.PostsConfig', 'posts']
