@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Follow
+from django.http import JsonResponse
 
 
 def paginator(request, posts):
@@ -18,7 +19,8 @@ def paginator(request, posts):
 
 # @cache_page(20)
 def index(request):
-    post_list = Post.objects.all().order_by("-pub_date")
+    post_list = Post.objects.all().select_related('author')\
+        .order_by("-pub_date")
     page_obj = paginator(request, post_list)
     context = {
         "page_obj": page_obj,
@@ -55,9 +57,6 @@ def profile(request, username):
 
 
 def post_detail(request, post_id):
-    # post = get_object_or_404(Post, pk=post_id)
-    # posts = Post.objects.filter(author=post.author)
-    # post_count = posts.count()
     post = get_object_or_404(Post, pk=post_id)
     posts = Post.objects.filter(author=post.author)
     post_count = posts.count()
@@ -148,19 +147,29 @@ def follow_index(request):
         'page_obj': page_obj,
     }
     return render(request, 'posts/follow.html', context)
+# def profile_follow(request, username):
+#     follow_author = get_object_or_404(User, username=username)
+#     if follow_author != request.user and (
+#         not request.user.follower.filter(author=follow_author).exists()
+#     ):
+#         Follow.objects.create(
+#             user=request.user,
+#             author=follow_author
+#         )
+#     return redirect('posts:profile', username)
 
 
 @login_required
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
-    if follow_author != request.user and (
-        not request.user.follower.filter(author=follow_author).exists()
-    ):
-        Follow.objects.create(
+    if follow_author != request.user:
+        created = Follow.objects.get_or_create(
+            author=follow_author,
             user=request.user,
-            author=follow_author
         )
-    return redirect('posts:profile', username)
+        if created:
+            return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
 
 
 @login_required

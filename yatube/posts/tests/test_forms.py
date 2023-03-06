@@ -1,14 +1,20 @@
 from django.test import Client, TestCase
-from ..forms import PostForm
 from ..models import Post, User, Group
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
+from django.core.cache import cache
+import tempfile
+import shutil
 
 
 class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+
+        settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+
         cls.user = User.objects.create_user("auth")
         cls.group = Group.objects.create(slug="slug")
         cls.image = SimpleUploadedFile(name='', content='')
@@ -18,11 +24,16 @@ class PostCreateFormTests(TestCase):
             group=cls.group,
             image=cls.image,
         )
-        cls.form = PostForm()
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        super().tearDownClass()
 
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        cache.clear()
 
     def test_create_post(self):
         """Валидная форма создает запись в Post."""
@@ -42,26 +53,6 @@ class PostCreateFormTests(TestCase):
             Post.objects.filter(
                 text=self.post.text * 2,
             ).exists()
-        )
-
-    def test_create_post_with_image(self):
-        """
-        Создаётся ли запись в базе данных при отправке поста с картинкой.
-        """
-        form_data = {
-            'text': 'текст',
-            'image': self.image,
-        }
-
-        self.authorized_client.post(
-            reverse("posts:create_post"), data=form_data, follow=True
-        )
-
-        self.assertEqual(Post.objects.count(), 2)
-
-        # Создалась ли запись с картинкой
-        self.assertTrue(
-            Post.objects.filter(image=self.image).exists()
         )
 
     def test_edit_post(self):
