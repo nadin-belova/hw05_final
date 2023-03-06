@@ -6,7 +6,6 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Follow
-from django.http import JsonResponse
 
 
 def paginator(request, posts):
@@ -147,29 +146,17 @@ def follow_index(request):
         'page_obj': page_obj,
     }
     return render(request, 'posts/follow.html', context)
-# def profile_follow(request, username):
-#     follow_author = get_object_or_404(User, username=username)
-#     if follow_author != request.user and (
-#         not request.user.follower.filter(author=follow_author).exists()
-#     ):
-#         Follow.objects.create(
-#             user=request.user,
-#             author=follow_author
-#         )
-#     return redirect('posts:profile', username)
 
 
 @login_required
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
     if follow_author != request.user:
-        created = Follow.objects.get_or_create(
+        Follow.objects.get_or_create(
             author=follow_author,
             user=request.user,
         )
-        if created:
-            return JsonResponse({'success': True})
-    return JsonResponse({'success': False})
+    return redirect('posts:profile', username)
 
 
 @login_required
