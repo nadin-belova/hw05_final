@@ -1,4 +1,4 @@
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from ..models import Post, User, Group
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -8,12 +8,14 @@ import tempfile
 import shutil
 
 
+settings.TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+
+
+@override_settings(MEDIA_ROOT=settings.TEMP_MEDIA_ROOT)
 class PostCreateFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-
-        settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
         cls.user = User.objects.create_user("auth")
         cls.group = Group.objects.create(slug="slug")
@@ -27,7 +29,7 @@ class PostCreateFormTests(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        shutil.rmtree(settings.TEMP_MEDIA_ROOT, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
