@@ -25,4 +25,5 @@ urlpatterns = [
         views.profile_unfollow,
         name='profile_unfollow'
     ),
+    path('joke/', views.joke, name='joke'),
 ]

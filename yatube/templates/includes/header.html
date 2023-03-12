@@ -12,17 +12,19 @@
 
           {% comment %} Меню - список пунктов со стандартными классами Bootsrap. Класс nav-pills нужен для выделения активных пунктов {% endcomment %}
           <ul class="nav nav-pills">
-           
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about:author' %}">Об авторе</a>
+                <a class="nav-link link-light "href="{% url 'posts:joke' %}">Какой ты программист(шутка)</a>
               </li>
               <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about:tech' %}">Технологии</a>
+                  <a class="nav-link link-light "href="{% url 'about:author' %}">Об авторе</a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link link-light" href="{% url 'about:tech' %}">Технологии</a>
               </li>
               {% if user.is_authenticated %}
               <li class="nav-item">
                   {% comment %} href="{% url 'posts:create_post' %} {% endcomment %}
-                  <a class="nav-link" href="{% url 'posts:create_post' %}"> Новая запись </a>
+                  <a class="nav-link link-light" href="{% url 'posts:create_post' %}"> Новая запись </a>
               </li>
 
               {% comment %} <li class="nav-item">
@@ -35,9 +37,12 @@
               <li class="nav-item">
                   <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
               </li>
-              <li>
-                  Пользователь: {{ user.username }}
-              </li>
+
+              <li class="nav-item">
+                <a class="nav-link ">Пользователь: {{ user.username }}</a>
+            </li>
+
+        
               {% else %}
               <li class="nav-item">
                   <a class="nav-link link-light" href="{% url 'users:login' %}">Войти</a>

@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Follow
+import random
 
 
 def paginator(request, posts):
@@ -166,3 +167,25 @@ def profile_unfollow(request, username):
     data_follow.delete()
 
     return redirect('posts:profile', username)
+
+
+def joke(request):
+    context = {}
+
+    if request.method == 'POST':
+        adjectives = ["умный", "удивительный", "усидчивый", "внимательный"]
+        positions = ["подающий надежды джуниор", "будущий  мидл",
+                     "питонист-спринтер", "будущий бекэнд-разработчик",
+                     "успешный айти-студент"]
+        todo = ["почитать книги по питону", "повторить джанго",
+                "порешать задачи на пайтоне", "повторить спринты",
+                "почивать на айти-лаврах"]
+        adjective = random.choice(adjectives)
+        position = random.choice(positions)
+        todo = random.choice(todo)
+        joke_text = f"Ты {adjective} {position} .Тебе следует {todo}"
+        context.update({
+            'joke_text': joke_text
+        })
+
+    return render(request, 'posts/joke.html', context)
