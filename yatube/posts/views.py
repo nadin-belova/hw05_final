@@ -173,19 +173,55 @@ def joke(request):
     context = {}
 
     if request.method == 'POST':
-        adjectives = ["умный", "удивительный", "усидчивый", "внимательный"]
-        positions = ["подающий надежды джуниор", "будущий  мидл",
-                     "питонист-спринтер", "будущий бекэнд-разработчик",
+        adjectives = ["умный", "удивительный", "усидчивый",
+                      "внимательный", "классный"]
+        positions = ["подающий надежды джуниор", "будущий мидл",
+                     "будущий серьор,не сеньор-помидор,а айтишник конечно",
+                     "будущий бекэнд-разработчик",
                      "успешный айти-студент"]
-        todo = ["почитать книги по питону", "повторить джанго",
-                "порешать задачи на пайтоне", "повторить спринты",
-                "почивать на айти-лаврах"]
+        todo = ["почитать книги по пайтону",
+                "повторить джанго,как бы не было сложно и нудно",
+                "порешать задачи на пайтоне на степике или еще где",
+                "повторить спринты,повторение- айтимать учения!",
+                "почивать на айти-лаврах,ты это заслужил",
+                "ускориться в прохождении спринтов",
+                "начинать проходить собеседования",
+                "советовать друзьям айти-курсы,особенно этот курс от яндекса",
+                "хорошо отдохнуть на каникулах перед следующим спринтом"]
         adjective = random.choice(adjectives)
         position = random.choice(positions)
         todo = random.choice(todo)
-        joke_text = f"Ты {adjective} {position} .Тебе следует {todo}"
+
+        page_data = request.POST.dict()
+
+        birth_month = page_data.get("birth_month")
+        birth_day = page_data.get("birth_day")
+
+        # joke_text = str(birth_month) + ' ' + str(birth_day)
+
+        joke_text = '!Исправь ошибку и введи правильные данные!'
+
+        errors = False
+
+        if birth_month.isnumeric() and 1 <= int(birth_month) <= 12:
+            birth_month_value = ''
+        else:
+            birth_month_value = "Введи_число_из_диапазона!"
+            errors = True
+
+        if birth_day.isnumeric() and 1 <= int(birth_day) <= 31:
+            birth_day_value = ''
+        else:
+            birth_day_value = "Введи_число_из_диапазона!"
+            errors = True
+
+        if not errors:
+            joke_text = f"Ты {adjective} {position} .Тебе следует {todo}"
+
         context.update({
-            'joke_text': joke_text
+            'joke_text': joke_text,
+            'birth_month_value': birth_month_value,
+            'birth_day_value': birth_day_value
         })
 
     return render(request, 'posts/joke.html', context)
