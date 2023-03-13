@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}
@@ -9,6 +10,9 @@
 {% block content %}
     <div class="col-xs-1" align="center">
     <h1>Какой ты программист?</h1>
+    <span style="color: blue">(введи требуемые данные в поля,нажми кнопку и получишь результат)
+    </span>
+    <br>
     <br>
     <form method="post">
       {% csrf_token %}
@@ -16,30 +20,29 @@
         Введите месяц вашего рождения (номер от 1 до 12):
       </label>
       <br>
-      <input type="text" name="birth_month" oninput="checkInput(this)">
+      <input type="text" name="birth_month" value={{ birth_month_value }}>
       <br>
       <br>
       <label for="birth_day">
         Введите день вашего рождения (номер от 1 до 31):
       </label>
       <br>
-      <br>
-      <input type="text" name="birth_day" oninput="checkInput(this)">
+      <input type="text" name="birth_day" value={{ birth_day_value }}>
       <br>
       <br>     
-      <input type="submit" value="Получить оценку+пожелание" style="background-color: blue; color: white; width: 30%; height: 4em;">
+      <input type="submit" value="жми сюда,программист" style="background-color: blue; color: white; width: 30%; height: 4em;">
 
       <br>
     </form>
     <br>
-    <br>
-    <br>
     {% if joke_text %}
       <blockquote class="blockquote">
 
-        <p class="mb-0" style="font-size: 30px; font-weight: bold; border: 4px solid 	#CD5C5C; border-radius: 15px; padding: 10px;">
-          {{ joke_text }}
-        </p>
+        <div style="width: 80%;">
+          <p class="mb-0" style="font-size: 30px; font-weight: bold; border: 10px solid #0000FF; border-radius: 15px; padding: 10px;">
+            {{ joke_text }}
+          </p>
+        </div>
 
       </blockquote>
       <footer class="blockquote-footer">
@@ -50,13 +53,4 @@
       </footer>
     {% endif %}
   </div>
-
-<script>
-  function checkInput(input) {
-    if (isNaN(input.value)) {
-      alert("Введите  только число");
-      input.value = "";
-    }
-  }
-</script>
 {% endblock %}
